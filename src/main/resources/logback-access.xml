@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="PROJECT_ID" value="SGPIG-Notification"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>combined</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR:-logs}/${PROJECT_ID}-access.json</file>
+        <encoder class="net.logstash.logback.encoder.AccessEventCompositeJsonEncoder">
+        <providers>
+        <timestamp></timestamp>
+        <message></message>
+        <version></version>
+        <stacktrace></stacktrace>
+        <pattern>
+      		<pattern>
+			{
+			        "application": "SGPIG-Notification",
+        			"remote_host": "%a",
+        			"status_code": "%s",
+        			"elapsed_time": "%D",
+        			"user_agent": "%i{User-Agent}",
+        			"accept": "%i{Accept}",
+        			"referer": "#nullNA{%i{Referer}}",
+        			"protocol": "%H",
+        			"method": "%m",
+        			"requested_uri": "%r",
+        			"requested_url": "%U",
+        			"request_cookie": "#nullNA{%requestCookie{JSESSIONID}}"
+        	}
+      		</pattern>
+      	</pattern>
+      	</providers>
+		</encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR:-logs}/${PROJECT_ID}-access.%d{yyyy-MM-dd}.%i.json</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <appender-ref ref="FILE" />
+</configuration>
